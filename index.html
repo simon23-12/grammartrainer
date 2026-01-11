@@ -1,0 +1,464 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English Grammar Trainer • Leibniz-Montessori-Gymnasium Düsseldorf</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ──────────────────────────────────────────────── */
+        /* Your existing beautiful CSS stays almost unchanged */
+        /* I only added a few small improvements               */
+        /* ──────────────────────────────────────────────── */
+
+        :root {
+            --bg-color: #2c2f33;
+            --card-bg-light: rgba(255, 255, 255, 0.85);
+            --card-bg-dark: rgba(40, 44, 52, 0.9);
+            --text-light: #333333;
+            --text-dark: #e0e0e0;
+            --accent-color: #4a90e2;
+            --bot-bubble-light: #f1f0f0;
+            --bot-bubble-dark: #44475a;
+            --shadow-light: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            --shadow-dark: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --transition-speed: 0.3s;
+        }
+
+        [data-theme="light"] {
+            --bg-body: #dcdcdc;
+            --card-bg: var(--card-bg-light);
+            --text-main: var(--text-light);
+            --bot-bubble: var(--bot-bubble-light);
+            --shadow: var(--shadow-light);
+            --input-bg: #ffffff;
+            --border-color: #ddd;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: var(--bg-color);
+            --card-bg: var(--card-bg-dark);
+            --text-main: var(--text-dark);
+            --bot-bubble: var(--bot-bubble-dark);
+            --shadow: var(--shadow-dark);
+            --input-bg: #2d2d2d;
+            --border-color: #444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            background-image: radial-gradient(circle at 50% 50%, #3a3f45 1px, transparent 1px);
+            background-size: 20px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+            transition: background-color var(--transition-speed);
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 900px;
+            height: 92vh;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.05);
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        h1 {
+            font-size: 1.35rem;
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.4rem;
+            color: var(--text-main);
+        }
+
+        #chat-history {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            max-width: 78%;
+            padding: 14px 20px;
+            border-radius: 20px;
+            font-size: 1.02rem;
+            line-height: 1.48;
+            position: relative;
+            animation: fadeIn 0.35s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.bot {
+            align-self: flex-start;
+            background-color: var(--bot-bubble);
+            color: var(--text-main);
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background-color: var(--accent-color);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .input-area {
+            padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.04);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 14px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 15px 22px;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-main);
+            outline: none;
+            font-size: 1.03rem;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent-color);
+        }
+
+        button.send-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 52px;
+            height: 52px;
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: all 0.2s;
+        }
+
+        button.send-btn:hover { background: #357abd; }
+        button.send-btn:active { transform: scale(0.94); }
+
+        .typing {
+            display: none;
+            align-self: flex-start;
+            background: var(--bot-bubble);
+            padding: 14px 20px;
+            border-radius: 20px;
+            border-bottom-left-radius: 5px;
+            gap: 7px;
+            width: fit-content;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: #999;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40%           { transform: scale(1); }
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 0; align-items: flex-start; }
+            .app-container {
+                height: 100vh;
+                max-width: 100%;
+                border-radius: 0;
+                border: none;
+            }
+            header { padding: 12px 18px; }
+            #chat-history { padding: 18px; }
+            .message { max-width: 86%; }
+            .input-area { padding: 14px 18px; }
+        }
+    </style>
+</head>
+<body data-theme="light">
+
+    <div class="app-container">
+        <header>
+            <div class="brand">
+                <img src="https://github.com/simon23-12/grammartrainer/blob/main/images/schoollogoonly.png?raw=true" 
+                     alt="School Logo" class="logo-img">
+                <h1>Grammar Trainer</h1>
+            </div>
+            <button class="theme-toggle" id="theme-btn" aria-label="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <main id="chat-history">
+            <!-- Welcome message -->
+            <div class="message bot">
+                Hi, I'm your personal LMG English Grammar assistant. I am here to help you improving your English! What grammar topic do you want to learn or practice? 😊
+            </div>
+        </main>
+
+        <!-- Typing indicator -->
+        <div class="typing" id="typing-indicator">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Ask anything about English grammar..." autocomplete="off">
+            <button class="send-btn" id="send-btn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ────────────────────────────────────────────────
+        //               DOM Elements
+        // ────────────────────────────────────────────────
+        const chatHistory      = document.getElementById('chat-history');
+        const userInput        = document.getElementById('user-input');
+        const sendBtn          = document.getElementById('send-btn');
+        const typingIndicator  = document.getElementById('typing-indicator');
+        const themeBtn         = document.getElementById('theme-btn');
+        const body             = document.body;
+
+        // ────────────────────────────────────────────────
+        //               Session Memory
+        // ────────────────────────────────────────────────
+        const STORAGE_KEY = 'lmg_grammar_chat_history';
+        const MAX_HISTORY = 20; // Keep last 20 messages for context
+
+        function getStoredHistory() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                return stored ? JSON.parse(stored) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveToHistory(role, text) {
+            const history = getStoredHistory();
+            history.push({ role, text });
+            // Keep only the last MAX_HISTORY messages
+            if (history.length > MAX_HISTORY) {
+                history.splice(0, history.length - MAX_HISTORY);
+            }
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+        }
+
+        function clearStoredHistory() {
+            localStorage.removeItem(STORAGE_KEY);
+        }
+
+        function restoreChat() {
+            const history = getStoredHistory();
+            if (history.length > 0) {
+                // Clear the default welcome message
+                chatHistory.innerHTML = '';
+                // Restore all messages
+                history.forEach(msg => {
+                    addMessage(msg.text, msg.role, false); // false = don't save again
+                });
+            }
+        }
+
+        // ────────────────────────────────────────────────
+        //               Theme Toggle
+        // ────────────────────────────────────────────────
+        themeBtn.addEventListener('click', () => {
+            const current = body.getAttribute('data-theme');
+            const next    = current === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', next);
+
+            const icon = themeBtn.querySelector('i');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        });
+
+        // ────────────────────────────────────────────────
+        //               Chat Helpers
+        // ────────────────────────────────────────────────
+        function addMessage(text, sender, save = true) {
+            const div = document.createElement('div');
+            div.classList.add('message', sender);
+            div.innerHTML = text;
+            chatHistory.appendChild(div);
+            scrollToBottom();
+            if (save) {
+                saveToHistory(sender, text);
+            }
+        }
+
+        function scrollToBottom() {
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        function showTyping() {
+            typingIndicator.style.display = 'flex';
+            chatHistory.appendChild(typingIndicator);
+            scrollToBottom();
+        }
+
+        function hideTyping() {
+            typingIndicator.style.display = 'none';
+        }
+
+        function botReply(text, delay = 600) {
+            showTyping();
+            setTimeout(() => {
+                hideTyping();
+                addMessage(text, 'bot');
+            }, delay);
+        }
+
+        // ────────────────────────────────────────────────
+        //               Gemma API Call
+        // ────────────────────────────────────────────────
+        async function askGemma(userText) {
+            showTyping();
+            try {
+                // Get recent history for context (last 10 messages)
+                const history = getStoredHistory().slice(-10);
+
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: userText, history: history })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    if (errorText.includes("A server error occurred")) {
+                        throw new Error("Vercel Server Crash (Check your Vercel Logs!)");
+                    }
+                    throw new Error(errorText || 'API request failed');
+                }
+
+                const data = await response.json();
+                hideTyping();
+
+                if (data.text) {
+                    addMessage(data.text, 'bot');
+                } else {
+                    throw new Error("No response text received from API");
+                }
+            } catch (err) {
+                hideTyping();
+                console.error(err);
+                botReply("Sorry, something went wrong: " + err.message);
+            }
+        }
+
+
+
+
+        // ────────────────────────────────────────────────
+        //               Main Message Handler
+        // ────────────────────────────────────────────────
+        async function handleUserMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            addMessage(text, 'user');
+            userInput.value = '';
+
+            // Very minimal command handling (optional)
+            const lower = text.toLowerCase().trim();
+
+            if (lower === 'hi' || lower === 'hello') {
+                botReply("Hey there! Ready to improve your English grammar? 😊");
+                return;
+            }
+
+            if (lower === 'clear' || lower === 'reset') {
+                chatHistory.innerHTML = '';
+                clearStoredHistory();
+                addMessage("Conversation cleared! How can I help you today?", 'bot');
+                return;
+            }
+
+            // Everything else → send to Gemma
+            await askGemma(text);
+        }
+
+        // ────────────────────────────────────────────────
+        //               Event Listeners
+        // ────────────────────────────────────────────────
+        sendBtn.addEventListener('click', handleUserMessage);
+        userInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleUserMessage();
+            }
+        });
+
+        // Restore chat history on load
+        restoreChat();
+
+        // Focus input on load
+        userInput.focus();
+    </script>
+</body>
+</html>

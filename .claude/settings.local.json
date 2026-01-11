@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "grep",
+      "read",
+      "edit"
+    ]
+  }
+}
