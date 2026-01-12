@@ -27,3 +27,7 @@
 - Single-file frontend approach (embedded CSS/JS in HTML)
 - Minimal API footprint
 
+## Error handling
+- Rate limit/server errors: Continue to next model
+- Other errors: Fail immediately without retrying
+- All models exhausted: Wait and retry entire circulation (exponential backoff)
