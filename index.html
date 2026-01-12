@@ -179,9 +179,7 @@
             border-color: var(--accent-color);
         }
 
-        button.send-btn {
-            background: var(--accent-color);
-            color: white;
+        button.send-btn, button.clear-btn {
             border: none;
             border-radius: 50%;
             width: 52px;
@@ -191,8 +189,20 @@
             transition: all 0.2s;
         }
 
+        button.send-btn {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        button.clear-btn {
+            background: #d4a017;
+            color: white;
+        }
+
         button.send-btn:hover { background: #357abd; }
         button.send-btn:active { transform: scale(0.94); }
+        button.clear-btn:hover { background: #b8891a; }
+        button.clear-btn:active { transform: scale(0.94); }
 
         .typing {
             display: none;
@@ -265,6 +275,9 @@
         </div>
 
         <div class="input-area">
+            <button class="clear-btn" id="clear-btn">
+                <i class="fas fa-times"></i>
+            </button>
             <input type="text" id="user-input" placeholder="Ask anything about English grammar..." autocomplete="off">
             <button class="send-btn" id="send-btn">
                 <i class="fas fa-paper-plane"></i>
@@ -279,6 +292,7 @@
         const chatHistory      = document.getElementById('chat-history');
         const userInput        = document.getElementById('user-input');
         const sendBtn          = document.getElementById('send-btn');
+        const clearBtn         = document.getElementById('clear-btn');
         const typingIndicator  = document.getElementById('typing-indicator');
         const themeBtn         = document.getElementById('theme-btn');
         const body             = document.body;
@@ -447,6 +461,13 @@
         //               Event Listeners
         // ────────────────────────────────────────────────
         sendBtn.addEventListener('click', handleUserMessage);
+
+        clearBtn.addEventListener('click', () => {
+            chatHistory.innerHTML = '';
+            clearStoredHistory();
+            addMessage("Conversation cleared! How can I help you today?", 'bot');
+        });
+
         userInput.addEventListener('keypress', e => {
             if (e.key === 'Enter') {
                 e.preventDefault();
