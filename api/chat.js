@@ -1,28 +1,33 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+// Model fallback order: always start with the best model
+const MODEL_FALLBACK_ORDER = [
+  "gemma-3-27b-it",
+  "gemma-3-12b-it",
+  "gemma-3-4b-it",
+  "gemma-3-1b-it"
+];
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  try {
-    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemma-3-27b-it" });
+  const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY);
+  const { prompt, history = [] } = req.body;
 
-    const { prompt, history = [] } = req.body;
+  // Build conversation context from history
+  let conversationContext = '';
+  if (history.length > 0) {
+    conversationContext = '\n### CONVERSATION SO FAR ###\n';
+    history.forEach(msg => {
+      const role = msg.role === 'user' ? 'Student' : 'Tutor';
+      conversationContext += `${role}: "${msg.text}"\n`;
+    });
+    conversationContext += '\n';
+  }
 
-    // Build conversation context from history
-    let conversationContext = '';
-    if (history.length > 0) {
-      conversationContext = '\n### CONVERSATION SO FAR ###\n';
-      history.forEach(msg => {
-        const role = msg.role === 'user' ? 'Student' : 'Tutor';
-        conversationContext += `${role}: "${msg.text}"\n`;
-      });
-      conversationContext += '\n';
-    }
-
-    const fullPrompt = `
+  const fullPrompt = `
 Instruction: You are a friendly English Grammar Tutor for the Leibniz-Montessori-Gymnasium Düsseldorf (grades 5-10).
 
 Rules:
@@ -61,11 +66,38 @@ ${conversationContext}
 Student: "${prompt}"
 Tutor:`;
 
-    const result = await model.generateContent(fullPrompt);
-    const response = await result.response;
+  // Try models in fallback order
+  let lastError = null;
+  for (const modelName of MODEL_FALLBACK_ORDER) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent(fullPrompt);
+      const response = await result.response;
 
-    return res.status(200).json({ text: response.text() });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
+      return res.status(200).json({ text: response.text() });
+    } catch (error) {
+      lastError = error;
+
+      // Check if it's a rate limit (429) or server overload (503) error
+      const isRateLimitError = error.message?.includes('429') ||
+                               error.status === 429 ||
+                               error.message?.toLowerCase().includes('rate limit');
+      const isServerError = error.message?.includes('503') ||
+                           error.status === 503 ||
+                           error.message?.toLowerCase().includes('overload');
+
+      // If it's a rate limit or server error, try the next model
+      if (isRateLimitError || isServerError) {
+        continue;
+      }
+
+      // For other errors, fail immediately
+      break;
+    }
   }
+
+  // All models failed
+  return res.status(500).json({
+    error: lastError?.message || 'I am a little tired, please try again in 10 seconds.'
+  });
 }
