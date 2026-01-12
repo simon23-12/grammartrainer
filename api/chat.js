@@ -66,37 +66,49 @@ ${conversationContext}
 Student: "${prompt}"
 Tutor:`;
 
-  // Try models in fallback order
+  // Try models in fallback order with exponential backoff
+  const MAX_RETRY_ATTEMPTS = 3;
   let lastError = null;
-  for (const modelName of MODEL_FALLBACK_ORDER) {
-    try {
-      const model = genAI.getGenerativeModel({ model: modelName });
-      const result = await model.generateContent(fullPrompt);
-      const response = await result.response;
 
-      return res.status(200).json({ text: response.text() });
-    } catch (error) {
-      lastError = error;
+  for (let attempt = 0; attempt < MAX_RETRY_ATTEMPTS; attempt++) {
+    for (const modelName of MODEL_FALLBACK_ORDER) {
+      try {
+        const model = genAI.getGenerativeModel({ model: modelName });
+        const result = await model.generateContent(fullPrompt);
+        const response = await result.response;
 
-      // Check if it's a rate limit (429) or server overload (503) error
-      const isRateLimitError = error.message?.includes('429') ||
-                               error.status === 429 ||
-                               error.message?.toLowerCase().includes('rate limit');
-      const isServerError = error.message?.includes('503') ||
-                           error.status === 503 ||
-                           error.message?.toLowerCase().includes('overload');
+        return res.status(200).json({ text: response.text() });
+      } catch (error) {
+        lastError = error;
 
-      // If it's a rate limit or server error, try the next model
-      if (isRateLimitError || isServerError) {
-        continue;
+        // Check if it's a rate limit (429) or server overload (503) error
+        const isRateLimitError = error.message?.includes('429') ||
+                                 error.status === 429 ||
+                                 error.message?.toLowerCase().includes('rate limit');
+        const isServerError = error.message?.includes('503') ||
+                             error.status === 503 ||
+                             error.message?.toLowerCase().includes('overload');
+
+        // If it's a rate limit or server error, try the next model
+        if (isRateLimitError || isServerError) {
+          continue;
+        }
+
+        // For other errors, fail immediately
+        return res.status(500).json({
+          error: lastError?.message || 'I am a little tired, please try again in 10 seconds.'
+        });
       }
+    }
 
-      // For other errors, fail immediately
-      break;
+    // All models failed in this attempt, wait before retrying
+    if (attempt < MAX_RETRY_ATTEMPTS - 1) {
+      const backoffDelay = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s
+      await new Promise(resolve => setTimeout(resolve, backoffDelay));
     }
   }
 
-  // All models failed
+  // All retry attempts exhausted
   return res.status(500).json({
     error: lastError?.message || 'I am a little tired, please try again in 10 seconds.'
   });
