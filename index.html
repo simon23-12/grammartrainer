@@ -110,17 +110,12 @@
             font-weight: 600;
         }
 
-        .theme-toggle, .mode-toggle {
+        .theme-toggle {
             background: none;
             border: none;
             cursor: pointer;
             font-size: 1.4rem;
             color: var(--text-main);
-            transition: transform 0.2s;
-        }
-
-        .mode-toggle:hover, .theme-toggle:hover {
-            transform: scale(1.1);
         }
 
         #chat-history {
@@ -236,141 +231,6 @@
             40%           { transform: scale(1); }
         }
 
-        /* ──────────────────────────────────────────────── */
-        /*               Audio Mode Styles                  */
-        /* ──────────────────────────────────────────────── */
-        .text-mode, .audio-mode {
-            display: none;
-            flex-direction: column;
-        }
-
-        .text-mode.active, .audio-mode.active {
-            display: flex;
-        }
-
-        .audio-interface {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
-            flex: 1;
-            padding: 40px;
-        }
-
-        .browser-warning {
-            background: rgba(255, 193, 7, 0.15);
-            border: 1px solid rgba(255, 193, 7, 0.4);
-            color: var(--text-main);
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            max-width: 500px;
-            text-align: center;
-        }
-
-        .browser-warning i {
-            color: #ffc107;
-            margin-right: 8px;
-        }
-
-        .audio-animation {
-            width: 200px;
-            height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .audio-circle {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .audio-circle i {
-            font-size: 3.5rem;
-            color: white;
-        }
-
-        .pulse-ring {
-            position: absolute;
-            border: 3px solid var(--accent-color);
-            border-radius: 50%;
-            width: 140px;
-            height: 140px;
-            opacity: 0;
-        }
-
-        .audio-circle.listening .pulse-ring,
-        .audio-circle.speaking .pulse-ring {
-            animation: pulse 1.5s ease-out infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                opacity: 0.6;
-            }
-            100% {
-                transform: scale(1.4);
-                opacity: 0;
-            }
-        }
-
-        .audio-circle.listening {
-            background: #e74c3c;
-        }
-
-        .audio-circle.speaking {
-            background: #2ecc71;
-        }
-
-        .audio-status {
-            font-size: 1.1rem;
-            color: var(--text-main);
-            min-height: 28px;
-        }
-
-        .mic-button {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: none;
-            background: var(--accent-color);
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
-        .mic-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
-        }
-
-        .mic-button:active {
-            transform: scale(0.95);
-        }
-
-        .mic-button.recording {
-            background: #e74c3c;
-            animation: recordPulse 1s ease-in-out infinite;
-        }
-
-        @keyframes recordPulse {
-            0%, 100% { box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4); }
-            50% { box-shadow: 0 4px 24px rgba(231, 76, 60, 0.8); }
-        }
-
         @media (max-width: 600px) {
             body { padding: 0; align-items: flex-start; }
             .app-container {
@@ -383,32 +243,21 @@
             #chat-history { padding: 18px; }
             .message { max-width: 86%; }
             .input-area { padding: 14px 18px; }
-            .audio-interface { padding: 20px; }
-            .audio-animation { width: 150px; height: 150px; }
-            .audio-circle { width: 100px; height: 100px; }
-            .audio-circle i { font-size: 2.5rem; }
-            .mic-button { width: 70px; height: 70px; font-size: 1.8rem; }
         }
     </style>
 </head>
 <body data-theme="light">
 
-    <!-- Text Chat Mode (Default) -->
-    <div class="app-container text-mode active" id="text-mode">
+    <div class="app-container">
         <header>
             <div class="brand">
-                <img src="https://github.com/simon23-12/grammartrainer/blob/main/images/schoollogoonly.png?raw=true"
+                <img src="https://github.com/simon23-12/grammartrainer/blob/main/images/schoollogoonly.png?raw=true" 
                      alt="School Logo" class="logo-img">
                 <h1>Grammar Trainer</h1>
             </div>
-            <div style="display: flex; gap: 12px; align-items: center;">
-                <button class="mode-toggle" id="mode-btn" aria-label="Switch to Audio Mode">
-                    <i class="fas fa-microphone"></i>
-                </button>
-                <button class="theme-toggle" id="theme-btn" aria-label="Toggle theme">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
+            <button class="theme-toggle" id="theme-btn" aria-label="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
         </header>
 
         <main id="chat-history">
@@ -432,45 +281,6 @@
             <input type="text" id="user-input" placeholder="Ask anything about English grammar..." autocomplete="off">
             <button class="send-btn" id="send-btn">
                 <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Audio Mode -->
-    <div class="app-container audio-mode" id="audio-mode">
-        <header>
-            <div class="brand">
-                <img src="https://github.com/simon23-12/grammartrainer/blob/main/images/schoollogoonly.png?raw=true"
-                     alt="School Logo" class="logo-img">
-                <h1>Audio Mode</h1>
-            </div>
-            <div style="display: flex; gap: 12px; align-items: center;">
-                <button class="mode-toggle" id="mode-btn-audio" aria-label="Switch to Text Mode">
-                    <i class="fas fa-keyboard"></i>
-                </button>
-                <button class="theme-toggle" id="theme-btn-audio" aria-label="Toggle theme">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
-        </header>
-
-        <div class="audio-interface">
-            <div class="browser-warning" id="browser-warning" style="display: none;">
-                <i class="fas fa-exclamation-triangle"></i>
-                Audio mode works best in Chrome or Edge. Speech recognition may not work in other browsers.
-            </div>
-
-            <div class="audio-animation">
-                <div class="audio-circle" id="audio-circle">
-                    <div class="pulse-ring"></div>
-                    <i class="fas fa-microphone" id="audio-icon"></i>
-                </div>
-            </div>
-
-            <div class="audio-status" id="audio-status">Press the button to start speaking</div>
-
-            <button class="mic-button" id="mic-btn" aria-label="Start recording">
-                <i class="fas fa-microphone"></i>
             </button>
         </div>
     </div>
@@ -670,302 +480,6 @@
 
         // Focus input on load
         userInput.focus();
-
-        // ────────────────────────────────────────────────
-        //               Audio Mode Implementation
-        // ────────────────────────────────────────────────
-        const textMode = document.getElementById('text-mode');
-        const audioMode = document.getElementById('audio-mode');
-        const modeBtnText = document.getElementById('mode-btn');
-        const modeBtnAudio = document.getElementById('mode-btn-audio');
-        const themeBtnAudio = document.getElementById('theme-btn-audio');
-        const browserWarning = document.getElementById('browser-warning');
-        const audioCircle = document.getElementById('audio-circle');
-        const audioIcon = document.getElementById('audio-icon');
-        const audioStatus = document.getElementById('audio-status');
-        const micBtn = document.getElementById('mic-btn');
-
-        let recognition = null;
-        let speechSynthesis = window.speechSynthesis;
-        let isRecording = false;
-        let isSpeaking = false;
-        let voicesLoaded = false;
-
-        // Ensure voices are loaded
-        if (speechSynthesis) {
-            speechSynthesis.onvoiceschanged = () => {
-                voicesLoaded = true;
-            };
-            // Trigger voice loading
-            speechSynthesis.getVoices();
-        }
-
-        // Check browser support
-        function checkSpeechSupport() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            return {
-                recognition: !!SpeechRecognition,
-                synthesis: !!window.speechSynthesis
-            };
-        }
-
-        // Initialize Speech Recognition (only once)
-        function initSpeechRecognition() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                return null;
-            }
-
-            if (recognition) {
-                return recognition; // Reuse existing instance
-            }
-
-            recognition = new SpeechRecognition();
-            recognition.lang = 'en-US';
-            recognition.continuous = false;
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            recognition.onstart = () => {
-                isRecording = true;
-                audioCircle.classList.add('listening');
-                audioCircle.classList.remove('speaking');
-                audioIcon.className = 'fas fa-microphone';
-                audioStatus.textContent = 'Listening...';
-                micBtn.classList.add('recording');
-            };
-
-            recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                audioStatus.textContent = 'Processing...';
-                handleAudioInput(transcript);
-            };
-
-            recognition.onerror = (event) => {
-                console.error('Speech recognition error:', event.error);
-                // Ignore "no-speech" errors
-                if (event.error !== 'no-speech') {
-                    audioStatus.textContent = 'Error: ' + event.error;
-                } else {
-                    audioStatus.textContent = 'No speech detected. Try again.';
-                }
-                resetAudioUI();
-            };
-
-            recognition.onend = () => {
-                isRecording = false;
-                micBtn.classList.remove('recording');
-                if (!isSpeaking) {
-                    audioCircle.classList.remove('listening');
-                }
-            };
-
-            return recognition;
-        }
-
-        // Handle audio input (speech-to-text result)
-        async function handleAudioInput(text) {
-            try {
-                // Check if we're running locally without API
-                const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-
-                // Get response from Gemma (reuse existing askGemma logic)
-                const history = getStoredHistory().slice(-10);
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: text, history: history })
-                });
-
-                if (!response.ok) {
-                    // If API fails in development, show helpful message
-                    if (isDevelopment && response.status === 501) {
-                        throw new Error('API not available locally. Deploy to Vercel or run: vercel dev');
-                    }
-                    throw new Error('API request failed');
-                }
-
-                const data = await response.json();
-
-                if (data.text) {
-                    // Save to history for context
-                    saveToHistory('user', text);
-                    saveToHistory('bot', data.text);
-
-                    // Speak the response
-                    speakText(data.text);
-                } else {
-                    throw new Error("No response text received");
-                }
-            } catch (err) {
-                console.error(err);
-                audioStatus.textContent = 'Error: ' + err.message;
-                speakText("Sorry, the API is not available. Please deploy to Vercel or run vercel dev.");
-            }
-        }
-
-        // Text-to-Speech with better voice selection
-        function speakText(text) {
-            if (!speechSynthesis) {
-                audioStatus.textContent = 'Text-to-speech not supported';
-                resetAudioUI();
-                return;
-            }
-
-            // Cancel any ongoing speech
-            speechSynthesis.cancel();
-
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = 1.1; // Slightly faster for more natural feel
-            utterance.pitch = 1.0;
-            utterance.volume = 1.0;
-
-            // Try to select a better voice
-            const voices = speechSynthesis.getVoices();
-
-            // Prefer these voices in order: Google US English, Samantha (macOS), or any en-US female voice
-            const preferredVoice = voices.find(voice =>
-                voice.lang.startsWith('en') &&
-                (voice.name.includes('Google') ||
-                 voice.name.includes('Samantha') ||
-                 voice.name.includes('Karen') ||
-                 voice.name.includes('Female'))
-            );
-
-            // If no preferred voice, just use first en-US voice
-            if (preferredVoice) {
-                utterance.voice = preferredVoice;
-            } else {
-                const enVoice = voices.find(voice => voice.lang.startsWith('en'));
-                if (enVoice) utterance.voice = enVoice;
-            }
-
-            utterance.onstart = () => {
-                isSpeaking = true;
-                audioCircle.classList.add('speaking');
-                audioCircle.classList.remove('listening');
-                audioIcon.className = 'fas fa-volume-up';
-                audioStatus.textContent = 'Speaking...';
-            };
-
-            utterance.onend = () => {
-                isSpeaking = false;
-                resetAudioUI();
-            };
-
-            utterance.onerror = (event) => {
-                console.error('Speech synthesis error:', event.error);
-                // Don't show error for "interrupted" - happens when user clicks during speech
-                if (event.error !== 'interrupted' && event.error !== 'canceled') {
-                    audioStatus.textContent = 'Speech error: ' + event.error;
-                }
-                isSpeaking = false;
-                resetAudioUI();
-            };
-
-            speechSynthesis.speak(utterance);
-        }
-
-        // Reset audio UI to idle state
-        function resetAudioUI() {
-            audioCircle.classList.remove('listening', 'speaking');
-            audioIcon.className = 'fas fa-microphone';
-            audioStatus.textContent = 'Press the button to start speaking';
-            micBtn.classList.remove('recording');
-        }
-
-        // Mode switching
-        function switchToAudioMode() {
-            const support = checkSpeechSupport();
-
-            textMode.classList.remove('active');
-            audioMode.classList.add('active');
-
-            // Show warning if speech recognition not supported
-            if (!support.recognition) {
-                browserWarning.style.display = 'block';
-            } else {
-                browserWarning.style.display = 'none';
-                recognition = initSpeechRecognition();
-            }
-
-            // Sync theme
-            const currentTheme = body.getAttribute('data-theme');
-            const audioThemeIcon = themeBtnAudio.querySelector('i');
-            if (currentTheme === 'dark') {
-                audioThemeIcon.classList.remove('fa-moon');
-                audioThemeIcon.classList.add('fa-sun');
-            }
-        }
-
-        function switchToTextMode() {
-            audioMode.classList.remove('active');
-            textMode.classList.add('active');
-
-            // Stop any ongoing speech
-            if (speechSynthesis) {
-                speechSynthesis.cancel();
-            }
-            if (recognition && isRecording) {
-                recognition.stop();
-            }
-
-            resetAudioUI();
-            userInput.focus();
-        }
-
-        // Event listeners for mode switching
-        modeBtnText.addEventListener('click', switchToAudioMode);
-        modeBtnAudio.addEventListener('click', switchToTextMode);
-
-        // Sync theme toggle in audio mode
-        themeBtnAudio.addEventListener('click', () => {
-            const current = body.getAttribute('data-theme');
-            const next = current === 'light' ? 'dark' : 'light';
-            body.setAttribute('data-theme', next);
-
-            // Update both theme buttons
-            const textIcon = themeBtn.querySelector('i');
-            const audioIcon = themeBtnAudio.querySelector('i');
-
-            textIcon.classList.toggle('fa-moon');
-            textIcon.classList.toggle('fa-sun');
-            audioIcon.classList.toggle('fa-moon');
-            audioIcon.classList.toggle('fa-sun');
-        });
-
-        // Microphone button
-        micBtn.addEventListener('click', () => {
-            if (isRecording) {
-                // Stop recording
-                if (recognition) {
-                    recognition.stop();
-                }
-                return;
-            }
-
-            if (isSpeaking) {
-                // Cancel ongoing speech
-                speechSynthesis.cancel();
-                resetAudioUI();
-                return;
-            }
-
-            // Start recording
-            if (recognition) {
-                try {
-                    recognition.start();
-                } catch (err) {
-                    console.error('Failed to start recognition:', err);
-                    audioStatus.textContent = 'Failed to start recording';
-                }
-            } else {
-                audioStatus.textContent = 'Speech recognition not available in this browser';
-                browserWarning.style.display = 'block';
-            }
-        });
-
     </script>
 </body>
 </html>
