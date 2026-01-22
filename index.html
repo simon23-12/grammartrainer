@@ -162,6 +162,33 @@
             border-top: 1px solid var(--border-color);
             display: flex;
             gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .char-counter {
+            font-size: 0.75rem;
+            color: var(--text-main);
+            opacity: 0.6;
+            text-align: right;
+            padding-right: 10px;
+        }
+
+        .char-counter.warning {
+            color: #e67e22;
+            opacity: 1;
+        }
+
+        .char-counter.limit {
+            color: #e74c3c;
+            opacity: 1;
         }
 
         input[type="text"] {
@@ -278,7 +305,10 @@
             <button class="clear-btn" id="clear-btn">
                 <i class="fas fa-times"></i>
             </button>
-            <input type="text" id="user-input" placeholder="Ask anything about English grammar..." autocomplete="off">
+            <div class="input-wrapper">
+                <input type="text" id="user-input" placeholder="Ask anything about English grammar..." autocomplete="off" maxlength="300">
+                <span class="char-counter" id="char-counter">0 / 300</span>
+            </div>
             <button class="send-btn" id="send-btn">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -295,7 +325,9 @@
         const clearBtn         = document.getElementById('clear-btn');
         const typingIndicator  = document.getElementById('typing-indicator');
         const themeBtn         = document.getElementById('theme-btn');
+        const charCounter      = document.getElementById('char-counter');
         const body             = document.body;
+        const MAX_CHARS        = 300;
 
         // ────────────────────────────────────────────────
         //               Session Memory
@@ -337,6 +369,23 @@
                 });
             }
         }
+
+        // ────────────────────────────────────────────────
+        //               Character Counter
+        // ────────────────────────────────────────────────
+        function updateCharCounter() {
+            const count = userInput.value.length;
+            charCounter.textContent = `${count} / ${MAX_CHARS}`;
+
+            charCounter.classList.remove('warning', 'limit');
+            if (count >= MAX_CHARS) {
+                charCounter.classList.add('limit');
+            } else if (count >= MAX_CHARS * 0.8) {
+                charCounter.classList.add('warning');
+            }
+        }
+
+        userInput.addEventListener('input', updateCharCounter);
 
         // ────────────────────────────────────────────────
         //               Theme Toggle
@@ -437,6 +486,7 @@
 
             addMessage(text, 'user');
             userInput.value = '';
+            updateCharCounter();
 
             // Very minimal command handling (optional)
             const lower = text.toLowerCase().trim();
