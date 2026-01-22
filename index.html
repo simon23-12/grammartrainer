@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>English Grammar Trainer • Leibniz-Montessori-Gymnasium Düsseldorf</title>
+    <title>Fremdsprachen-Helfer • Leibniz-Montessori-Gymnasium Düsseldorf</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -280,7 +280,7 @@
             <div class="brand">
                 <img src="https://github.com/simon23-12/grammartrainer/blob/main/images/schoollogoonly.png?raw=true" 
                      alt="School Logo" class="logo-img">
-                <h1>Grammar Trainer</h1>
+                <h1>Fremdsprachen-Helfer</h1>
             </div>
             <button class="theme-toggle" id="theme-btn" aria-label="Toggle theme">
                 <i class="fas fa-moon"></i>
@@ -290,7 +290,7 @@
         <main id="chat-history">
             <!-- Welcome message -->
             <div class="message bot">
-                Hi, I'm your personal LMG English grammar assistant. I am here to help you improving your English! What grammar topic do you want to learn or practice? 😊
+                Hi, ich bin dein persönlicher LMG Fremdsprachen-Helfer. Was kann ich für dich tun? :)
             </div>
         </main>
 
@@ -306,7 +306,7 @@
                 <i class="fas fa-times"></i>
             </button>
             <div class="input-wrapper">
-                <input type="text" id="user-input" placeholder="Ask anything about English grammar..." autocomplete="off" maxlength="300">
+                <input type="text" id="user-input" placeholder="Stell mir eine Frage zu Fremdsprachen..." autocomplete="off" maxlength="300">
                 <span class="char-counter" id="char-counter">0 / 300</span>
             </div>
             <button class="send-btn" id="send-btn">
@@ -491,15 +491,15 @@
             // Very minimal command handling (optional)
             const lower = text.toLowerCase().trim();
 
-            if (lower === 'hi' || lower === 'hello') {
-                botReply("Hey there! Ready to improve your English grammar? 😊");
+            if (lower === 'hi' || lower === 'hello' || lower === 'hallo') {
+                botReply("Hey! Bereit, deine Sprachkenntnisse zu verbessern? :)");
                 return;
             }
 
             if (lower === 'clear' || lower === 'reset') {
                 chatHistory.innerHTML = '';
                 clearStoredHistory();
-                addMessage("Conversation cleared! How can I help you today?", 'bot');
+                addMessage("Unterhaltung gelöscht! Wie kann ich dir helfen?", 'bot');
                 return;
             }
 
@@ -515,7 +515,7 @@
         clearBtn.addEventListener('click', () => {
             chatHistory.innerHTML = '';
             clearStoredHistory();
-            addMessage("Conversation cleared! How can I help you today?", 'bot');
+            addMessage("Unterhaltung gelöscht! Wie kann ich dir helfen?", 'bot');
         });
 
         userInput.addEventListener('keypress', e => {
